@@ -1,9 +1,8 @@
 import { useDojo } from './DojoContext';
-import { Direction, } from './dojo/createSystemCalls'
 import { useComponentValue } from "@latticexyz/react";
 import { Entity } from '@latticexyz/recs';
-import { useEffect, useState } from 'react';
-import { getEntityIdFromKeys, setComponentsFromGraphQLEntities } from '@dojoengine/utils';
+import { useState } from 'react';
+import { getEntityIdFromKeys } from '@dojoengine/utils';
 import { Cell } from './components/cell';
 import { EmojiContextMenu } from './components/menu';
 import { EmojiIndex } from './constants';
@@ -11,11 +10,9 @@ import { EmojiIndex } from './constants';
 function App() {
   const {
     setup: {
-      systemCalls: { spawn },
       components,
-      network: { contractComponents }
     },
-    account: { create, list, select, account, isDeploying }
+    account: { account }
   } = useDojo();
 
   // extract query

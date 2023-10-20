@@ -1,6 +1,5 @@
 import { SetupNetworkResult } from "./setupNetwork";
 import { Account } from "starknet";
-import { EntityIndex, getComponentValue } from "@latticexyz/recs";
 import { uuid } from "@latticexyz/utils";
 import { ClientComponents } from "./createClientComponents";
 import { getEntityIdFromKeys, getEvents, setComponentsFromEvents } from "@dojoengine/utils";
