@@ -13,13 +13,13 @@ function App() {
     setup: {
       systemCalls: { spawn },
       components,
-      network: { graphSdk, contractComponents }
+      network: { contractComponents }
     },
     account: { create, list, select, account, isDeploying }
   } = useDojo();
 
   // extract query
-  const { getEntities } = graphSdk()
+  // const { getEntities } = graphSdk()
 
   // entity id - this example uses the account address as the entity id
   const entityId = account.address.toString();

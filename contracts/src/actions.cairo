@@ -1,52 +1,38 @@
 use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
-use dojo_examples::models::{Position, Moves, Direction};
+use dojo_examples::models::{Position};
+use dojo_examples::models::{Vec2, Emoji, TimeOut, Owner};
 use starknet::{ContractAddress, ClassHash};
 
 // define the interface
 #[starknet::interface]
 trait IActions<TContractState> {
-    fn spawn(self: @TContractState);
-    fn move(self: @TContractState, direction: Direction);
+    fn spawn(self: @TContractState, vec: Vec2, emoji_type: u8);
 }
 
 // dojo decorator
 #[dojo::contract]
 mod actions {
-    use starknet::{ContractAddress, get_caller_address};
-    use dojo_examples::models::{Position, Moves, Direction, Vec2};
-    use dojo_examples::utils::next_position;
+    use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
+    use dojo_examples::models::{Position, Vec2, Emoji, TimeOut, Owner};
     use super::IActions;
 
-    // declaring custom event struct
-    #[event]
-    #[derive(Drop, starknet::Event)]
-    enum Event {
-        Moved: Moved,
-    }
-
-    // declaring custom event struct
-    #[derive(Drop, starknet::Event)]
-    struct Moved {
-        player: ContractAddress,
-        direction: Direction
-    }
+    const TIME_OUT: u64 = 1000;
 
     // impl: implement functions specified in trait
     #[external(v0)]
     impl ActionsImpl of IActions<ContractState> {
         // ContractState is defined by system decorator expansion
-        fn spawn(self: @ContractState) {
+        fn spawn(self: @ContractState, vec: Vec2, emoji_type: u8) {
             // Access the world dispatcher for reading.
             let world = self.world_dispatcher.read();
 
             // Get the address of the current caller, possibly the player's address.
             let player = get_caller_address();
 
-            // Retrieve the player's current position from the world.
-            let position = get!(world, player, (Position));
+            let time = get_block_timestamp();
 
-            // Retrieve the player's move data, e.g., how many moves they have left.
-            let moves = get!(world, player, (Moves));
+            // Retrieve the player's current position from the world.
+            let (position, time_out) = get!(world, (vec.x, vec.y), (Position, TimeOut));
 
             // Update the world state with the new data.
             // 1. Increase the player's remaining moves by 10.
@@ -54,41 +40,12 @@ mod actions {
             set!(
                 world,
                 (
-                    Moves {
-                        player, remaining: moves.remaining + 10, last_direction: Direction::None(())
-                    },
-                    Position {
-                        player, vec: Vec2 { x: position.vec.x + 10, y: position.vec.y + 10 }
-                    },
+                    Position { x: vec.x, y: vec.y, vec: Vec2 { x: vec.x, y: vec.y } },
+                    Emoji { x: vec.x, y: vec.y, emoji_type },
+                    TimeOut { x: vec.x, y: vec.y, time: time + TIME_OUT },
+                    Owner { x: vec.x, y: vec.y, player }
                 )
             );
-        }
-
-        // Implementation of the move function for the ContractState struct.
-        fn move(self: @ContractState, direction: Direction) {
-            // Access the world dispatcher for reading.
-            let world = self.world_dispatcher.read();
-
-            // Get the address of the current caller, possibly the player's address.
-            let player = get_caller_address();
-
-            // Retrieve the player's current position and moves data from the world.
-            let (mut position, mut moves) = get!(world, player, (Position, Moves));
-
-            // Deduct one from the player's remaining moves.
-            moves.remaining -= 1;
-
-            // Update the last direction the player moved in.
-            moves.last_direction = direction;
-
-            // Calculate the player's next position based on the provided direction.
-            let next = next_position(position, direction);
-
-            // Update the world state with the new moves data and position.
-            set!(world, (moves, next));
-
-            // Emit an event to the world to notify about the player's move.
-            emit!(world, Moved { player, direction });
         }
     }
 }
@@ -104,8 +61,8 @@ mod tests {
     use dojo::test_utils::{spawn_test_world, deploy_contract};
 
     // import models
-    use dojo_examples::models::{position, moves};
-    use dojo_examples::models::{Position, Moves, Direction, Vec2};
+    use dojo_examples::models::{position, emoji, time_out, owner};
+    use dojo_examples::models::{Position, Vec2, Emoji, TimeOut, Owner};
 
     // import actions
     use super::{actions, IActionsDispatcher, IActionsDispatcherTrait};
@@ -117,7 +74,12 @@ mod tests {
         let caller = starknet::contract_address_const::<0x0>();
 
         // models
-        let mut models = array![position::TEST_CLASS_HASH, moves::TEST_CLASS_HASH];
+        let mut models = array![
+            position::TEST_CLASS_HASH,
+            emoji::TEST_CLASS_HASH,
+            time_out::TEST_CLASS_HASH,
+            owner::TEST_CLASS_HASH
+        ];
 
         // deploy world with models
         let world = spawn_test_world(models);
@@ -130,28 +92,7 @@ mod tests {
         // call spawn()
         actions_system.spawn();
 
-        // call move with direction right
-        actions_system.move(Direction::Right(()));
-
-        // Check world state
-        let moves = get!(world, caller, Moves);
-
-        // casting right direction
-        let right_dir_felt: felt252 = Direction::Right(()).into();
-
-        // check moves
-        assert(moves.remaining == 9, 'moves is wrong');
-
-        // check last direction
-        assert(moves.last_direction.into() == right_dir_felt, 'last direction is wrong');
-
         // get new_position
         let new_position = get!(world, caller, Position);
-
-        // check new position x
-        assert(new_position.vec.x == 11, 'position x is wrong');
-
-        // check new position y
-        assert(new_position.vec.y == 10, 'position y is wrong');
     }
 }

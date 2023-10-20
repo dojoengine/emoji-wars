@@ -5,47 +5,6 @@ use dojo::database::schema::{
     Enum, Member, Ty, Struct, SchemaIntrospection, serialize_member, serialize_member_type
 };
 
-#[derive(Serde, Copy, Drop, Introspect)]
-enum Direction {
-    None: (),
-    Left: (),
-    Right: (),
-    Up: (),
-    Down: (),
-}
-
-impl DirectionPrintImpl of PrintTrait<Direction> {
-    fn print(self: Direction) {
-        match self {
-            Direction::None(()) => 0.print(),
-            Direction::Left(()) => 1.print(),
-            Direction::Right(()) => 2.print(),
-            Direction::Up(()) => 3.print(),
-            Direction::Down(()) => 4.print(),
-        }
-    }
-}
-
-impl DirectionIntoFelt252 of Into<Direction, felt252> {
-    fn into(self: Direction) -> felt252 {
-        match self {
-            Direction::None(()) => 0,
-            Direction::Left(()) => 1,
-            Direction::Right(()) => 2,
-            Direction::Up(()) => 3,
-            Direction::Down(()) => 4,
-        }
-    }
-}
-
-#[derive(Model, Copy, Drop, Serde)]
-struct Moves {
-    #[key]
-    player: ContractAddress,
-    remaining: u8,
-    last_direction: Direction
-}
-
 #[derive(Copy, Drop, Serde, Print, Introspect)]
 struct Vec2 {
     x: u32,
@@ -55,9 +14,39 @@ struct Vec2 {
 #[derive(Model, Copy, Drop, Print, Serde)]
 struct Position {
     #[key]
-    player: ContractAddress,
+    x: u32,
+    #[key]
+    y: u32,
     vec: Vec2,
 }
+
+#[derive(Model, Copy, Drop, Print, Serde)]
+struct Emoji {
+    #[key]
+    x: u32,
+    #[key]
+    y: u32,
+    emoji_type: u8,
+}
+
+#[derive(Model, Copy, Drop, Print, Serde)]
+struct Owner {
+    #[key]
+    x: u32,
+    #[key]
+    y: u32,
+    player: ContractAddress,
+}
+
+#[derive(Model, Copy, Drop, Print, Serde)]
+struct TimeOut {
+    #[key]
+    x: u32,
+    #[key]
+    y: u32,
+    time: u64,
+}
+
 
 trait Vec2Trait {
     fn is_zero(self: Vec2) -> bool;

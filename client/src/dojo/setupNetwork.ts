@@ -3,8 +3,8 @@ import { world } from "./world";
 import { RPCProvider, Query, } from "@dojoengine/core";
 import { Account, num } from "starknet";
 import { GraphQLClient } from 'graphql-request';
-import { getSdk } from '../generated/graphql';
-import manifest from '../../../dojo-starter/target/dev/manifest.json'
+// import { getSdk } from '../generated/graphql';
+import manifest from '../../../contracts/target/dev/manifest.json'
 
 export type SetupNetworkResult = Awaited<ReturnType<typeof setupNetwork>>;
 
@@ -24,7 +24,7 @@ export async function setupNetwork() {
         contractComponents: defineContractComponents(world),
 
         // Define the graph SDK instance.
-        graphSdk: () => getSdk(new GraphQLClient(VITE_PUBLIC_TORII)),
+        // graphSdk: () => getSdk(new GraphQLClient(VITE_PUBLIC_TORII)),
 
         // Execute function.
         execute: async (signer: Account, contract: string, system: string, call_data: num.BigNumberish[]) => {
