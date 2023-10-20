@@ -8,6 +8,6 @@ export function createClientComponents({ contractComponents }: SetupNetworkResul
     return {
         ...contractComponents,
         Position: overridableComponent(contractComponents.Position),
-        Moves: overridableComponent(contractComponents.Moves),
+        Emoji: overridableComponent(contractComponents.Emoji),
     };
 }

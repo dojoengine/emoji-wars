@@ -2,13 +2,16 @@ import { useDojo } from './DojoContext';
 import { Direction, } from './dojo/createSystemCalls'
 import { useComponentValue } from "@latticexyz/react";
 import { Entity } from '@latticexyz/recs';
-import { useEffect } from 'react';
-import { setComponentsFromGraphQLEntities } from '@dojoengine/utils';
+import { useEffect, useState } from 'react';
+import { getEntityIdFromKeys, setComponentsFromGraphQLEntities } from '@dojoengine/utils';
+import { Cell } from './components/cell';
+import { EmojiContextMenu } from './components/menu';
+import { EmojiIndex } from './constants';
 
 function App() {
   const {
     setup: {
-      systemCalls: { spawn, move },
+      systemCalls: { spawn },
       components,
       network: { graphSdk, contractComponents }
     },
@@ -22,53 +25,76 @@ function App() {
   const entityId = account.address.toString();
 
   // get current component values
-  const position = useComponentValue(components.Position, entityId as Entity);
-  const moves = useComponentValue(components.Moves, entityId as Entity);
+  const position = useComponentValue(components.Position, getEntityIdFromKeys([BigInt(1), BigInt(1)]));
+  const emoji_component = useComponentValue(components.Emoji, entityId as Entity);
 
-  console.log("position", position);
+  console.log("position", position, emoji_component);
 
-  // use graphql to current state data
-  useEffect(() => {
-    if (!entityId) return;
+  // // use graphql to current state data
+  // useEffect(() => {
+  //   if (!entityId) return;
 
-    const fetchData = async () => {
-      try {
-        const { data } = await getEntities();
-        if (data && data.entities) {
-          setComponentsFromGraphQLEntities(contractComponents, data.entities.edges);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  //   const fetchData = async () => {
+  //     try {
+  //       const { data } = await getEntities();
+  //       if (data && data.entities) {
+  //         setComponentsFromGraphQLEntities(contractComponents, data.entities.edges);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
 
-    fetchData();
-  }, [entityId, contractComponents]);
+  //   fetchData();
+  // }, [entityId, contractComponents]);
 
+  const totalRows = 30;
+  const totalCols = 30;
+
+  const [contextMenuPosition, setContextMenuPosition] = useState(null);
+  const [selectedEmoji, setSelectedEmoji] = useState<EmojiIndex>(1);
+
+  const handleRightClick = (event: any) => {
+    event.preventDefault();
+    setContextMenuPosition({
+      x: event.clientX,
+      y: event.clientY
+    });
+  };
+
+  const handleEmojiSelect = (emoji: EmojiIndex) => {
+
+    console.log(emoji)
+    setSelectedEmoji(emoji);
+    closeContextMenu();  // Close the context menu when an emoji is selected
+  };
+
+  const closeContextMenu = () => {
+    setContextMenuPosition(null);
+  };
 
   return (
-    <>
-      <button onClick={create}>{isDeploying ? "deploying burner" : "create burner"}</button>
-      <div className="card">
-        select signer:{" "}
-        <select onChange={e => select(e.target.value)}>
-          {list().map((account, index) => {
-            return <option value={account.address} key={index}>{account.address}</option>
-          })}i
-        </select>
+    <div onContextMenu={handleRightClick} className="App">
+
+      {contextMenuPosition && (
+        <EmojiContextMenu
+          position={contextMenuPosition}
+          onSelect={handleEmojiSelect}
+          onClose={closeContextMenu}
+        />
+      )}
+
+      <div className="grid">
+        {Array.from({ length: totalRows }).map((_, rowIndex) => (
+          <div key={rowIndex} className="row">
+            {Array.from({ length: totalCols }).map((_, colIndex) => {
+              return <Cell x={colIndex.toString()} y={rowIndex.toString()} emoji={selectedEmoji} />
+            }
+            )}
+          </div>
+        ))}
       </div>
-      <div className="card">
-        <button onClick={() => spawn(account)}>Spawn</button>
-        <div>Moves Left: {moves ? `${moves['remaining']}` : 'Need to Spawn'}</div>
-        <div>Position: {position ? `${position.vec['x']}, ${position.vec['y']}` : 'Need to Spawn'}</div>
-      </div>
-      <div className="card">
-        <button onClick={() => move(account, Direction.Up)}>Move Up</button> <br />
-        <button onClick={() => move(account, Direction.Left)}>Move Left</button>
-        <button onClick={() => move(account, Direction.Right)}>Move Right</button> <br />
-        <button onClick={() => move(account, Direction.Down)}>Move Down</button>
-      </div>
-    </>
+    </div>
   );
 }
 
