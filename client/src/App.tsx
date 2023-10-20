@@ -1,14 +1,34 @@
-import { useState } from 'react';
+import { useDojo } from './DojoContext';
+import { Direction, } from './dojo/createSystemCalls'
+import { useComponentValue } from "@latticexyz/react";
+import { Entity } from '@latticexyz/recs';
+import { useEffect, useState } from 'react';
+import { getEntityIdFromKeys, setComponentsFromGraphQLEntities } from '@dojoengine/utils';
 import { Cell } from './components/cell';
 import { EmojiContextMenu } from './components/menu';
 import { EmojiIndex } from './constants';
 
 function App() {
-
+  const {
+    setup: {
+      systemCalls: { spawn },
+      components,
+      network: { graphSdk, contractComponents }
+    },
+    account: { create, list, select, account, isDeploying }
+  } = useDojo();
 
   // extract query
-  // const { getEntities } = graphSdk() /
+  const { getEntities } = graphSdk()
 
+  // entity id - this example uses the account address as the entity id
+  const entityId = account.address.toString();
+
+  // get current component values
+  const position = useComponentValue(components.Position, getEntityIdFromKeys([BigInt(1), BigInt(1)]));
+  const emoji_component = useComponentValue(components.Emoji, entityId as Entity);
+
+  console.log("position", position, emoji_component);
 
   // // use graphql to current state data
   // useEffect(() => {

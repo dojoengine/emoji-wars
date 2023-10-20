@@ -22,21 +22,6 @@ export function defineContractComponents(world: World) {
         }
       );
     })(),
-    TimeOut: (() => {
-      const name = "TimeOut";
-      return defineComponent(
-        world,
-        {
-          time: RecsType.Number,
-        },
-        {
-          metadata: {
-            name: name,
-            types: ["u64"],
-          },
-        }
-      );
-    })(),
     Emoji: (() => {
       const name = "Emoji";
       return defineComponent(
