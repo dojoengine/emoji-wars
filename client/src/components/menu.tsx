@@ -1,12 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { EmojiMap, ReverseEmojiMap } from '../constants';
 
-const emojis = [
-    "😀", "😂", "😍", "😢", "👍", "👏", "🤔", "😎", "😉", "🤖"
-];
-
 export const EmojiContextMenu = ({ position, onSelect, onClose }: any) => {
-    const [isVisible, setIsVisible] = useState(true);
     const menuRef = useRef(null);
 
     useEffect(() => {

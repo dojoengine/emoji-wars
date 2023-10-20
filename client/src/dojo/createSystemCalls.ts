@@ -1,6 +1,5 @@
 import { SetupNetworkResult } from "./setupNetwork";
 import { Account } from "starknet";
-import { EntityIndex, getComponentValue } from "@latticexyz/recs";
 import { uuid } from "@latticexyz/utils";
 import { ClientComponents } from "./createClientComponents";
 import { getEntityIdFromKeys, getEvents, setComponentsFromEvents } from "@dojoengine/utils";
@@ -30,6 +29,7 @@ export function createSystemCalls(
 
         try {
             const tx = await execute(signer, "actions", 'spawn', [x, y, emoji]);
+
             setComponentsFromEvents(contractComponents,
                 getEvents(
                     await signer.waitForTransaction(tx.transaction_hash,
