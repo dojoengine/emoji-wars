@@ -1,3 +1,6 @@
+## Emoji wars
+
+
 ## Integrate React with Dojo: A Quick Start Guide
 
 Dive into this straightforward example to understand how to meld React with Dojo.

@@ -7,13 +7,16 @@ use starknet::{ContractAddress, ClassHash};
 #[starknet::interface]
 trait IActions<TContractState> {
     fn spawn(self: @TContractState, vec: Vec2, emoji_type: u8);
+    fn check_time_out(self: @TContractState, vec: Vec2) -> u64;
 }
 
 // dojo decorator
 #[dojo::contract]
 mod actions {
     use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
-    use dojo_examples::models::{Position, Vec2, Emoji, TimeOut, Owner, EmojiTimeOut, EmojiTrait};
+    use dojo_examples::models::{
+        Position, Vec2, Emoji, TimeOut, Owner, EmojiTimeOut, EmojiTrait, Count
+    };
     use super::IActions;
 
     const TIME_OUT: u64 = 1000;
@@ -36,6 +39,8 @@ mod actions {
                 world, (vec.x, vec.y), (Position, TimeOut, Emoji)
             );
 
+            let mut emoij_count = get!(world, emoji_type, Count);
+
             emoji.convert_neighbours(world, emoji_type);
 
             set!(
@@ -45,9 +50,18 @@ mod actions {
                     Emoji { x: vec.x, y: vec.y, emoji_type },
                     TimeOut { x: vec.x, y: vec.y, time: time + TIME_OUT },
                     Owner { x: vec.x, y: vec.y, player },
-                    EmojiTimeOut { emoji_type, time: time + TIME_OUT }
+                    EmojiTimeOut { emoji_type, time: time + TIME_OUT },
+                    Count { emoji_type, count: emoij_count.count + 1 }
                 )
             );
+        }
+
+        fn check_time_out(self: @ContractState, vec: Vec2) -> u64 {
+            // let world = self.world_dispatcher.read();
+
+            let time_out = get!(self.world_dispatcher.read(), (vec.x, vec.y), TimeOut);
+
+            time_out.time
         }
     }
 }

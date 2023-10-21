@@ -60,8 +60,26 @@ impl EmojiImpl of EmojiTrait {
     }
     fn set_neighbour(self: Emoji, world: IWorldDispatcher, x: u32, y: u32, emoji_type: u8) {
         let neighbour = get!(world, (x, y), Emoji);
+
+        let current_emoji_count = get!(world, (emoji_type), Count);
+
+        let neighbour_count = get!(world, (neighbour.emoji_type), Count);
+
         if (neighbour.emoji_type != 0) {
-            set!(world, Emoji { x, y, emoji_type })
+            set!(
+                world,
+                (
+                    Emoji { x, y, emoji_type },
+                    Count { emoji_type, count: current_emoji_count.count + 1 }
+                )
+            );
+
+            if (neighbour.emoji_type != emoji_type) {
+                set!(
+                    world,
+                    (Count { emoji_type: neighbour.emoji_type, count: neighbour_count.count - 1 })
+                );
+            }
         }
     }
 }
@@ -89,6 +107,13 @@ struct EmojiTimeOut {
     #[key]
     emoji_type: u8,
     time: u64,
+}
+
+#[derive(Model, Copy, Drop, Print, Serde)]
+struct Count {
+    #[key]
+    emoji_type: u8,
+    count: u64,
 }
 
 

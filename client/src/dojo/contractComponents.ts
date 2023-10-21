@@ -11,7 +11,7 @@ export function defineContractComponents(world: World) {
         {
           vec: {
             x: RecsType.Number,
-            y: RecsType.Number,
+            y: RecsType.Number
           },
         },
         {
@@ -73,6 +73,21 @@ export function defineContractComponents(world: World) {
         world,
         {
           time: RecsType.Number,
+        },
+        {
+          metadata: {
+            name: name,
+            types: ["u64"],
+          },
+        }
+      );
+    })(),
+    Count: (() => {
+      const name = "Count";
+      return defineComponent(
+        world,
+        {
+          count: RecsType.Number,
         },
         {
           metadata: {
