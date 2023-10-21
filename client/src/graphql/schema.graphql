@@ -1,19 +1,21 @@
 query getEntities {
-  entities(keys: ["%"]) {
+  entities(keys: ["%"], limit: 100) {
     edges {
       node {
         keys
         models {
           __typename
-          ... on Moves {
-            remaining
-            last_direction
-          }
           ... on Position {
             vec {
               x
               y
             }
+          }
+          ... on Emoji {
+            emoji_type
+          }
+          ... on TimeOut {
+            time
           }
         }
       }

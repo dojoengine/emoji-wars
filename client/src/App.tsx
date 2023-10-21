@@ -1,49 +1,14 @@
-import { useDojo } from './DojoContext';
-import { useComponentValue } from "@latticexyz/react";
-import { Entity } from '@latticexyz/recs';
-import { useState } from 'react';
-import { getEntityIdFromKeys } from '@dojoengine/utils';
+import { useEffect, useState } from 'react';
 import { Cell } from './components/cell';
 import { EmojiContextMenu } from './components/menu';
 import { EmojiIndex } from './constants';
+import { useSyncWorld } from './hooks/useSyncWorld';
+import { useDojo } from './DojoContext';
 
 function App() {
-  const {
-    setup: {
-      components,
-    },
-    account: { account }
-  } = useDojo();
+  useSyncWorld();
 
-  // extract query
-  // const { getEntities } = graphSdk()
-
-  // entity id - this example uses the account address as the entity id
-  const entityId = account.address.toString();
-
-  // get current component values
-  const position = useComponentValue(components.Position, getEntityIdFromKeys([BigInt(1), BigInt(1)]));
-  const emoji_component = useComponentValue(components.Emoji, entityId as Entity);
-
-  console.log("position", position, emoji_component);
-
-  // // use graphql to current state data
-  // useEffect(() => {
-  //   if (!entityId) return;
-
-  //   const fetchData = async () => {
-  //     try {
-  //       const { data } = await getEntities();
-  //       if (data && data.entities) {
-  //         setComponentsFromGraphQLEntities(contractComponents, data.entities.edges);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [entityId, contractComponents]);
+  const { setup: { entityUpdates } } = useDojo()
 
   const totalRows = 30;
   const totalCols = 30;
@@ -70,6 +35,19 @@ function App() {
     setContextMenuPosition(null);
   };
 
+  useEffect(() => {
+    const subscription = entityUpdates.subscribe((updates) => {
+
+      console.log(updates)
+      // const notifications = generateTradeNotifications(updates, Status);
+      // addUniqueNotifications(notifications, setNotifications);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
   return (
     <div onContextMenu={handleRightClick} className="App">
 
@@ -80,12 +58,11 @@ function App() {
           onClose={closeContextMenu}
         />
       )}
-
       <div className="grid">
         {Array.from({ length: totalRows }).map((_, rowIndex) => (
           <div key={rowIndex} className="row">
-            {Array.from({ length: totalCols }).map((_, colIndex) => {
-              return <Cell x={colIndex.toString()} y={rowIndex.toString()} emoji={selectedEmoji} />
+            {Array.from({ length: totalCols }).map((index, colIndex) => {
+              return <Cell key={index} x={colIndex.toString()} y={rowIndex.toString()} emoji={selectedEmoji} />
             }
             )}
           </div>
