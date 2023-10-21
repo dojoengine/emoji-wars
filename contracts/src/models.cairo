@@ -1,4 +1,5 @@
 use array::ArrayTrait;
+use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 use core::debug::PrintTrait;
 use starknet::ContractAddress;
 use dojo::database::schema::{
@@ -29,6 +30,42 @@ struct Emoji {
     emoji_type: u8,
 }
 
+
+#[generate_trait]
+impl EmojiImpl of EmojiTrait {
+    fn convert_neighbours(self: Emoji, world: IWorldDispatcher, emoji_type: u8) {
+        // north
+        self.set_neighbour(world, self.x, self.y + 1, emoji_type);
+
+        // north east
+        self.set_neighbour(world, self.x + 1, self.y + 1, emoji_type);
+
+        // east
+        self.set_neighbour(world, self.x + 1, self.y, emoji_type);
+
+        // south east
+        self.set_neighbour(world, self.x + 1, self.y - 1, emoji_type);
+
+        // south
+        self.set_neighbour(world, self.x, self.y - 1, emoji_type);
+
+        // south west
+        self.set_neighbour(world, self.x - 1, self.y - 1, emoji_type);
+
+        // west
+        self.set_neighbour(world, self.x - 1, self.y, emoji_type);
+
+        // north west
+        self.set_neighbour(world, self.x - 1, self.y + 1, emoji_type);
+    }
+    fn set_neighbour(self: Emoji, world: IWorldDispatcher, x: u32, y: u32, emoji_type: u8) {
+        let neighbour = get!(world, (x, y), Emoji);
+        if (neighbour.emoji_type != 0) {
+            set!(world, Emoji { x, y, emoji_type })
+        }
+    }
+}
+
 #[derive(Model, Copy, Drop, Print, Serde)]
 struct Owner {
     #[key]
@@ -44,6 +81,13 @@ struct TimeOut {
     x: u32,
     #[key]
     y: u32,
+    time: u64,
+}
+
+#[derive(Model, Copy, Drop, Print, Serde)]
+struct EmojiTimeOut {
+    #[key]
+    emoji_type: u8,
     time: u64,
 }
 

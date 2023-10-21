@@ -52,5 +52,35 @@ export function defineContractComponents(world: World) {
         }
       );
     })(),
+    TimeOut: (() => {
+      const name = "TimeOut";
+      return defineComponent(
+        world,
+        {
+          time: RecsType.Number,
+        },
+        {
+          metadata: {
+            name: name,
+            types: ["u64"],
+          },
+        }
+      );
+    })(),
+    EmojiTimeOut: (() => {
+      const name = "EmojiTimeOut";
+      return defineComponent(
+        world,
+        {
+          time: RecsType.Number,
+        },
+        {
+          metadata: {
+            name: name,
+            types: ["u64"],
+          },
+        }
+      );
+    })(),
   };
 }

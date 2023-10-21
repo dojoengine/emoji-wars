@@ -13,7 +13,7 @@ trait IActions<TContractState> {
 #[dojo::contract]
 mod actions {
     use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
-    use dojo_examples::models::{Position, Vec2, Emoji, TimeOut, Owner};
+    use dojo_examples::models::{Position, Vec2, Emoji, TimeOut, Owner, EmojiTimeOut, EmojiTrait};
     use super::IActions;
 
     const TIME_OUT: u64 = 1000;
@@ -32,18 +32,20 @@ mod actions {
             let time = get_block_timestamp();
 
             // Retrieve the player's current position from the world.
-            let (position, time_out) = get!(world, (vec.x, vec.y), (Position, TimeOut));
+            let (position, time_out, emoji) = get!(
+                world, (vec.x, vec.y), (Position, TimeOut, Emoji)
+            );
 
-            // Update the world state with the new data.
-            // 1. Increase the player's remaining moves by 10.
-            // 2. Move the player's position 10 units in both the x and y direction.
+            emoji.convert_neighbours(world, emoji_type);
+
             set!(
                 world,
                 (
                     Position { x: vec.x, y: vec.y, vec: Vec2 { x: vec.x, y: vec.y } },
                     Emoji { x: vec.x, y: vec.y, emoji_type },
                     TimeOut { x: vec.x, y: vec.y, time: time + TIME_OUT },
-                    Owner { x: vec.x, y: vec.y, player }
+                    Owner { x: vec.x, y: vec.y, player },
+                    EmojiTimeOut { emoji_type, time: time + TIME_OUT }
                 )
             );
         }
@@ -61,8 +63,8 @@ mod tests {
     use dojo::test_utils::{spawn_test_world, deploy_contract};
 
     // import models
-    use dojo_examples::models::{position, emoji, time_out, owner};
-    use dojo_examples::models::{Position, Vec2, Emoji, TimeOut, Owner};
+    use dojo_examples::models::{position, emoji, time_out, owner, emoji_time_out};
+    use dojo_examples::models::{Position, Vec2, Emoji, TimeOut, Owner, EmojiTimeOut};
 
     // import actions
     use super::{actions, IActionsDispatcher, IActionsDispatcherTrait};
@@ -78,7 +80,8 @@ mod tests {
             position::TEST_CLASS_HASH,
             emoji::TEST_CLASS_HASH,
             time_out::TEST_CLASS_HASH,
-            owner::TEST_CLASS_HASH
+            owner::TEST_CLASS_HASH,
+            emoji_time_out::TEST_CLASS_HASH
         ];
 
         // deploy world with models
