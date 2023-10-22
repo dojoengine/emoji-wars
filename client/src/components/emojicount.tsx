@@ -2,7 +2,7 @@ import { getEntityIdFromKeys } from "@dojoengine/utils";
 import { useDojo } from "../DojoContext";
 import { useComponentValue } from "@latticexyz/react";
 import { EmojiMap } from "../constants";
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 export const EmojiCount = ({ emoji_id }: any) => {
     const {
