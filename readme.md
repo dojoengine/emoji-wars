@@ -73,3 +73,7 @@ cd dojo-starter && torii
 ```
 
 Upon completion, launch your browser and navigate to http://localhost:5173/. You'll be greeted by the running example!
+
+
+## Production
+sozo --release migrate --rpc-url https://api.cartridge.gg/x/emoji-wars/katana

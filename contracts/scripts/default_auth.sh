@@ -15,10 +15,11 @@ echo actions : $ACTIONS_ADDRESS
 echo "---------------------------------------------------------------------------"
 
 # enable system -> component authorizations
-COMPONENTS=("Position" "Moves" )
+COMPONENTS=("Position" "Emoji" "Owner" "TimeOut" "Count" "EmojiTimeOut")
 
 for component in ${COMPONENTS[@]}; do
     sozo auth writer $component $ACTIONS_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
+    sleep 1
 done
 
 echo "Default authorizations have been successfully set."

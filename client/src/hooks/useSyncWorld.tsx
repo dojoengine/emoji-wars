@@ -89,6 +89,9 @@ export const useSyncWorld = (): { loading: boolean; progress: number } => {
                                         ... on TimeOut {
                                           time
                                         }
+                                        ... on Count {
+                                          count
+                                        }
                                     }
                                     }
                                 }

@@ -35,52 +35,91 @@ struct Emoji {
 impl EmojiImpl of EmojiTrait {
     fn convert_neighbours(self: Emoji, world: IWorldDispatcher, emoji_type: u8) {
         // north
-        self.set_neighbour(world, self.x, self.y + 1, emoji_type);
+        let (north_neighbour, north_current_emoji_count, north_neighbour_count) = self
+            .set_neighbour(world, self.x, self.y + 1, emoji_type);
 
         // north east
-        self.set_neighbour(world, self.x + 1, self.y + 1, emoji_type);
+        let (north_east_neighbour, north_east_current_emoji_count, north_east_neighbour_count) =
+            self
+            .set_neighbour(world, self.x + 1, self.y + 1, emoji_type);
 
         // east
-        self.set_neighbour(world, self.x + 1, self.y, emoji_type);
+        let (east_neighbour, east_current_emoji_count, east_neighbour_count) = self
+            .set_neighbour(world, self.x + 1, self.y, emoji_type);
 
         // south east
-        self.set_neighbour(world, self.x + 1, self.y - 1, emoji_type);
+        let (south_east_neighbour, south_east_current_emoji_count, south_east_neighbour_count) =
+            self
+            .set_neighbour(world, self.x + 1, self.y - 1, emoji_type);
 
         // south
-        self.set_neighbour(world, self.x, self.y - 1, emoji_type);
+        let (south_neighbour, south_current_emoji_count, south_neighbour_count) = self
+            .set_neighbour(world, self.x, self.y - 1, emoji_type);
 
         // south west
-        self.set_neighbour(world, self.x - 1, self.y - 1, emoji_type);
+        let (south_west_neighbour, south_west_current_emoji_count, south_west_neighbour_count) =
+            self
+            .set_neighbour(world, self.x - 1, self.y - 1, emoji_type);
 
         // west
-        self.set_neighbour(world, self.x - 1, self.y, emoji_type);
+        let (west_neighbour, west_current_emoji_count, west_neighbour_count) = self
+            .set_neighbour(world, self.x - 1, self.y, emoji_type);
 
         // north west
-        self.set_neighbour(world, self.x - 1, self.y + 1, emoji_type);
+        let (north_west_neighbour, north_west_current_emoji_count, north_west_neighbour_count) =
+            self
+            .set_neighbour(world, self.x - 1, self.y + 1, emoji_type);
+
+        set!(
+            world,
+            (
+                north_neighbour,
+                north_current_emoji_count,
+                north_neighbour_count,
+                north_east_neighbour,
+                north_east_current_emoji_count,
+                north_east_neighbour_count,
+                east_neighbour,
+                east_current_emoji_count,
+                east_neighbour_count,
+                south_east_neighbour,
+                south_east_current_emoji_count,
+                south_east_neighbour_count,
+                south_neighbour,
+                south_current_emoji_count,
+                south_neighbour_count,
+                south_west_neighbour,
+                south_west_current_emoji_count,
+                south_west_neighbour_count,
+                west_neighbour,
+                west_current_emoji_count,
+                west_neighbour_count,
+                north_west_neighbour,
+                north_west_current_emoji_count,
+                north_west_neighbour_count
+            )
+        );
     }
-    fn set_neighbour(self: Emoji, world: IWorldDispatcher, x: u32, y: u32, emoji_type: u8) {
-        let neighbour = get!(world, (x, y), Emoji);
+    fn set_neighbour(
+        self: Emoji, world: IWorldDispatcher, x: u32, y: u32, emoji_type: u8
+    ) -> (Emoji, Count, Count) {
+        let mut neighbour = get!(world, (x, y), Emoji);
+        let original_neighbour_type = neighbour.emoji_type; // Store original type
 
-        let current_emoji_count = get!(world, (emoji_type), Count);
+        let mut current_emoji_count = get!(world, (emoji_type), Count);
+        let mut original_neighbour_count = get!(world, (original_neighbour_type), Count);
 
-        let neighbour_count = get!(world, (neighbour.emoji_type), Count);
+        if (original_neighbour_type != 0 && original_neighbour_type != emoji_type) {
+            neighbour.emoji_type = emoji_type;
+            current_emoji_count.count += 1; // Increase count for the new emoji type
 
-        if (neighbour.emoji_type != 0) {
-            set!(
-                world,
-                (
-                    Emoji { x, y, emoji_type },
-                    Count { emoji_type, count: current_emoji_count.count + 1 }
-                )
-            );
-
-            if (neighbour.emoji_type != emoji_type) {
-                set!(
-                    world,
-                    (Count { emoji_type: neighbour.emoji_type, count: neighbour_count.count - 1 })
-                );
+            if (original_neighbour_count.count > 1) {
+                original_neighbour_count.count -= 1;
             }
+        // Decrease count for the original emoji type
         }
+
+        (neighbour, current_emoji_count, original_neighbour_count)
     }
 }
 

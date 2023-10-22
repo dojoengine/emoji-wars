@@ -21,13 +21,13 @@ export const EmojiContextMenu = ({ position, onSelect, onClose }: any) => {
         position ? (
             <div
                 ref={menuRef}
-                className="context-menu"
+                className="absolute z-100 bg-white grid grid-cols-2 gap-1"
                 style={{ top: position.y, left: position.x }}
             >
                 {Object.entries(EmojiMap).map(([key, emoji]) => (
                     <div
                         key={key}
-                        className="context-menu-item"
+                        className="hover:bg-gray-200 cursor-pointer p-2 "
                         onClick={() => onSelect(ReverseEmojiMap[emoji])}
                     >
                         {emoji}

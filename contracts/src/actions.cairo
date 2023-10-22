@@ -41,6 +41,10 @@ mod actions {
 
             let mut emoij_count = get!(world, emoji_type, Count);
 
+            // can't set on exising emoji
+            assert(emoji.emoji_type != emoji_type, 'Emoji already exists');
+
+            // convert neighbours
             emoji.convert_neighbours(world, emoji_type);
 
             set!(
