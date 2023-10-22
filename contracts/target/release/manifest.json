@@ -858,7 +858,7 @@
     {
       "name": "actions",
       "address": "0x69a474a39b11d05c07bb9090fd1961b8e1c87aa5643e7b97087cb0c7620356a",
-      "class_hash": "0x686ba5889867e1c0b37ec118dc9844f7d04cd47354ddfe1225c8209a4900e0a",
+      "class_hash": "0x4f36fde5068acd667c2021c5fd78340f91ca32d7a42068faf143ede57c21b5b",
       "abi": [
         {
           "type": "impl",
@@ -924,11 +924,27 @@
             },
             {
               "type": "function",
-              "name": "check_time_out",
+              "name": "check_cell_time_out",
               "inputs": [
                 {
                   "name": "vec",
                   "type": "dojo_examples::models::Vec2"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "core::integer::u64"
+                }
+              ],
+              "state_mutability": "view"
+            },
+            {
+              "type": "function",
+              "name": "check_emoji_time_out",
+              "inputs": [
+                {
+                  "name": "emoji_type",
+                  "type": "core::integer::u8"
                 }
               ],
               "outputs": [
