@@ -1,21 +1,21 @@
-## Emoji wars
+## Emoji Wars 🌍💥
 
-Emoji wars is an emoji sandbox, designed for chaos and fun.
+Emoji Wars 🚀 is an emoji sandbox 🏖, designed for chaos 🌀 and fun 🎉.
 
-### It is designed a persistent world that is owned by the community.
+### It's designed as a persistent world 🌐 that's owned by the community 👥.
 
-The world is a 2d grid of tiles with emojis aiming for domination.
+This world 🌍 is a 2D grid 📏 of tiles with emojis 😎🦄🍕 aiming for domination 💪.
 
-### Systems
+### Systems 🖥
 
-The goal of emoji wars is for new systems to be implemented frequently and world resets to happen often. Everything is open and anyone can publish a system into the world.
+The goal 🎯 of Emoji Wars is for new systems 🔄 to be implemented frequently 🔄 and world resets 🔄 to happen often. Everything is transparent 🌈 and anyone 🙋‍♂️🙋‍♀️ can publish a system into the world 🌍.
 
-There is only 1 enshrined system, and that is of the emojis placement and the grids.
+There's only 1️⃣ enshrined system, and that's the emoji placement 📍 and the grids 📊.
 
-### Season 1
+### Season 1 🎬
 
-- When you place an emoji you covert the tiles around you to your emoji if they exist
-- There is a 5 minute timer between placing emoji types
+- When you place an emoji 😊, you convert the tiles around you to your emoji if they exist 🔄.
+- There's a 5️⃣ minute ⏰ timer between placing different emoji types 🔄.
 
 **Prerequisites:** First and foremost, ensure that Dojo is installed on your system. If it isn't, you can easily get it set up with:
 
