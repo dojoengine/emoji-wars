@@ -28,7 +28,7 @@ export const Cell = ({ x, y, emoji }: any) => {
             onClick={() => spawn(account, x, y, emoji)}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className={`cell  ${emoji_component && emoji_component.emoji_type != 0 ? (isTimeoutPast ? 'bg-green-100' : 'bg-red-100') : ''}`}
+            className={`cell border  ${emoji_component && emoji_component.emoji_type != 0 ? (isTimeoutPast ? 'bg-green-100' : 'bg-red-100') : ''}`}
         >
             {isHovered ? EmojiMap[emoji] : (emoji_component ? EmojiMap[emoji_component.emoji_type] : "")}
         </div>

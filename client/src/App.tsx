@@ -13,7 +13,7 @@ function App() {
   const { setup: { entityUpdates }, account: { create, list, select, account, isDeploying } } = useDojo()
 
   const totalRows = 30;
-  const totalCols = 30;
+  const totalCols = 60;
 
   const [contextMenuPosition, setContextMenuPosition] = useState(null);
   const [selectedEmoji, setSelectedEmoji] = useState<EmojiIndex>(1);
@@ -53,6 +53,7 @@ function App() {
   return (
     <div onContextMenu={handleRightClick} className="App">
       <div>
+        <h2 className='text-xl'>EMOJI WARS v0.0.01</h2>
         {account.address}
       </div>
       {loading || account.address === VITE_PUBLIC_MASTER_ADDRESS ? <div className='h-screen w-screen bg-white flex fixed top-0 justify-center '>
@@ -76,8 +77,6 @@ function App() {
           </div>
         </div>
       </div> : ''}
-
-
       {contextMenuPosition && (
         <EmojiContextMenu
           position={contextMenuPosition}
@@ -88,7 +87,7 @@ function App() {
       <div>
         {!loading && <LeaderBoard />}
       </div>
-      <div className="grid-emoji">
+      <div className="grid-emoji mx-auto">
         {Array.from({ length: totalRows }).map((_, rowIndex) => (
           <div key={rowIndex} className="row">
             {Array.from({ length: totalCols }).map((index, colIndex) => {

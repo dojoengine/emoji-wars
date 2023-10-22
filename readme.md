@@ -12,10 +12,10 @@ The goal of emoji wars is for new systems to be implemented frequently and world
 
 There is only 1 enshrined system, and that is of the emojis placement and the grids.
 
-### How does this work?
+### Season 1
 
-There is a special system called `open_auth` that allows developers to call with their new system address and then those systems will then be able to act on the enshrined system.
-
+- When you place an emoji you covert the tiles around you to your emoji if they exist
+- There is a 5 minute timer between placing emoji types
 
 **Prerequisites:** First and foremost, ensure that Dojo is installed on your system. If it isn't, you can easily get it set up with:
 
