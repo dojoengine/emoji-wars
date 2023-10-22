@@ -52,7 +52,10 @@ function App() {
 
   return (
     <div onContextMenu={handleRightClick} className="App">
-      {loading && account !== VITE_PUBLIC_MASTER_ADDRESS && <div className='h-screen w-screen bg-white flex fixed top-0 justify-center '>
+      <div>
+        {account.address}
+      </div>
+      {loading || account.address === VITE_PUBLIC_MASTER_ADDRESS ? <div className='h-screen w-screen bg-white flex fixed top-0 justify-center '>
         <div className='self-center'>
           <div>
             <LoadingEmoji />
@@ -72,7 +75,7 @@ function App() {
             </select>
           </div>
         </div>
-      </div>}
+      </div> : ''}
 
 
       {contextMenuPosition && (
