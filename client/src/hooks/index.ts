@@ -25,14 +25,6 @@ export type UpdatedEntity = {
     model_names: string[];
 };
 
-type GetLatestEntitiesQuery = {
-    entities: {
-        edges: {
-            node: Entity & { model_names: string };
-        }[];
-    };
-};
-
 export async function createEntitySubscription(contractComponents: Components): Promise<Observable<UpdatedEntity[]>> {
     const { VITE_PUBLIC_TORII, VITE_PUBLIC_TORII_WS } = import.meta.env;
     const wsClient = createClient({ url: VITE_PUBLIC_TORII_WS });
@@ -60,7 +52,17 @@ export async function createEntitySubscription(contractComponents: Components): 
                     queryEntityInfoById(entityUpdated.id, componentNames, client, contractComponents).then((entityInfo) => {
                         const { entity } = entityInfo as EntityQuery;
                         setComponentFromGraphQLEntityTemp(contractComponents, entity)
+
+                        const previousUpdate = lastUpdate$.getValue().slice(0, 15);
+                        if (isEntityUpdate(componentNames)) {
+                            lastUpdate$.next([
+                                { entityKeys: entity.keys as string[], model_names: componentNames },
+                                ...previousUpdate,
+                            ]);
+                        }
                     });
+
+
                 } catch (error) {
                     console.log({ error });
                 }
@@ -91,6 +93,13 @@ const createComponentQueries = (components: Components): string => {
     return componentQueries;
 };
 
+const isEntityUpdate = (componentNames: string[]) => {
+    // create realm
+    if (["Emoji"].every((element) => componentNames.includes(element)))
+        return true;
+    else return false;
+};
+
 function generateGraphQLFragmentForComponent(component: any): string {
     function getFieldsForObject(obj: any): string {
         return Object.keys(obj).map(key => {
@@ -109,73 +118,6 @@ function generateGraphQLFragmentForComponent(component: any): string {
       ${fields}
     }`;
 }
-
-/**
- * Checks if an entity update is relevant for the UI
- *
- * @param componentNames
- * @returns
- */
-
-const isEntityUpdate = (componentNames: string[]) => {
-    // create realm
-    if (["Realm", "Owner", "EntityMetadata", "Position"].every((element) => componentNames.includes(element)))
-        return true;
-    // create resource
-    else if (componentNames.length === 1 && componentNames[0] === "Resource") return true;
-    else if (["Trade", "Status"].every((element) => componentNames.includes(element))) return true;
-    else return false;
-};
-
-/**
- * Fetches initial data from the graphql endpoint in order to have a history of events when the UI is loaded
- * @param contractComponents components from the contract
- * @param client graphql client
- * @param max max number of entities to fetch
- * @returns a list of entities with their keys and component names
- */
-
-export const getInitialData = async (
-    contractComponents: Components,
-    client: GraphQLClient,
-    max?: number,
-): Promise<UpdatedEntity[]> => {
-
-    const componentQueries = createComponentQueries(contractComponents);
-
-    const rawIntitialData: GetLatestEntitiesQuery = await client.request(gql`
-      query latestEntities {
-        entities(first: ${max || 100}) {
-          edges {
-            node {
-              __typename
-              keys
-              componentNames
-              components {
-                __typename
-                ${componentQueries}
-              }
-            }
-          }
-        }
-      }
-    `);
-
-    const initialData = rawIntitialData.entities.edges
-        .map((edge) => {
-            const componentNames = edge.node.model_names.split(",");
-
-            if (isEntityUpdate(componentNames)) {
-                return {
-                    entityKeys: edge.node.keys,
-                    model_names: edge.node.model_names.split(","),
-                };
-            }
-        })
-        .filter(Boolean) as UpdatedEntity[];
-
-    return initialData;
-};
 
 // make query to fetch component values (temporary, will be fixed soon in torii)
 const queryEntityInfoById = async (

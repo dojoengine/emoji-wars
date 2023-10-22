@@ -40,7 +40,7 @@ function App() {
   useEffect(() => {
     const subscription = entityUpdates.subscribe((updates) => {
 
-      console.log(updates)
+      console.log("updates", updates)
       // const notifications = generateTradeNotifications(updates, Status);
       // addUniqueNotifications(notifications, setNotifications);
     });

@@ -12,8 +12,6 @@ export const EmojiCount = ({ emoji_id }: any) => {
 
     const emoji_count = useComponentValue(components.Count, getEntityIdFromKeys([BigInt(emoji_id)]));
 
-    console.log(emoji_count)
-
     return <div className=" flex space-x-1 px-2">
         <div>
             {EmojiMap[emoji_id]}

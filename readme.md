@@ -1,17 +1,21 @@
 ## Emoji wars
 
+Emoji wars is an emoji sandbox, designed for chaos and fun.
 
-## Integrate React with Dojo: A Quick Start Guide
+### It is designed a persistent world that is owned by the community.
 
-Dive into this straightforward example to understand how to meld React with Dojo.
+The world is a 2d grid of tiles with emojis aiming for domination.
 
-This integration taps into the powerful libraries designed by [Lattice](https://lattice.xyz/):
+### Systems
 
-- [recs](https://github.com/latticexyz/mud/tree/main/packages/recs)
+The goal of emoji wars is for new systems to be implemented frequently and world resets to happen often. Everything is open and anyone can publish a system into the world.
 
-### Initial Setup
+There is only 1 enshrined system, and that is of the emojis placement and the grids.
 
-The repository already contains the `dojo-starter` as a submodule. Feel free to remove it if you prefer.
+### How does this work?
+
+There is a special system called `open_auth` that allows developers to call with their new system address and then those systems will then be able to act on the enshrined system.
+
 
 **Prerequisites:** First and foremost, ensure that Dojo is installed on your system. If it isn't, you can easily get it set up with:
 
@@ -31,25 +35,19 @@ For an in-depth setup guide, consult the [Dojo book](https://book.dojoengine.org
 
 After cloning the project, execute the following:
 
-0. **init submodule**
-
-```
-git submodule update --init --recursive
-```
-
 1. **Terminal 1 - Katana**:
 
 ```console
-cd dojo-starter && katana --disable-fee
+cd contracts && katana --disable-fee
 ```
 
 2. **Terminal 2 - Contracts**:
 
 ```console
-cd dojo-starter && sozo build && sozo migrate
+cd contracts && sozo build && sozo migrate
 
 // Basic Auth - This will allow burner Accounts to interact with the contracts
-sh ./dojo-starter/scripts/default_auth.sh
+sh ./contracts/scripts/default_auth.sh
 ```
 
 3. **Terminal 3 - Client**:
@@ -66,10 +64,8 @@ cd client && bun install && bun dev
 
 4. **Terminal 4 - Torii**:
 
-Uncomment the 'world_address' parameter in `dojo-starter/Scarb.toml` then:
-
 ```console
-cd dojo-starter && torii
+cd dojo-starter && torii --world <WORLD>
 ```
 
 Upon completion, launch your browser and navigate to http://localhost:5173/. You'll be greeted by the running example!

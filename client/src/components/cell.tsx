@@ -21,7 +21,6 @@ export const Cell = ({ x, y, emoji }: any) => {
 
     const currentTime = Math.floor(Date.now() / 1000);
 
-    // Determine if the timeout is in the past. If time_out is undefined, it will default to false.
     const isTimeoutPast = time_out ? time_out.time <= currentTime : false;
 
     return (
