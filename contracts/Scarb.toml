@@ -17,10 +17,19 @@ initializer_class_hash = "0xbeef"
 [tool.dojo.env]
 # rpc_url = "http://localhost:5050/"
 # Default account for katana with seed = 0
-account_address = "0x517ececd29116499f4a1b64b094da79ba08dfd54a3edaa316134c41f8160973"
-private_key = "0x1800000000300000180000000000030000000000003006001800006600"
+# account_address = "0x517ececd29116499f4a1b64b094da79ba08dfd54a3edaa316134c41f8160973"
+# private_key = "0x1800000000300000180000000000030000000000003006001800006600"
 
-# account_address = "0x2c40fae48905f3fe20bbc68a4077fd01c4638528c9c2d99d2f1b6135d7eb7ee"
-# private_key = "0x10ebe1ffcdbfe4c6ea0f0dbd74ce1aef078cc88a7d4196ccce4b8d976e06fd9"
+account_address = "0x2c40fae48905f3fe20bbc68a4077fd01c4638528c9c2d99d2f1b6135d7eb7ee"
+private_key = "0x10ebe1ffcdbfe4c6ea0f0dbd74ce1aef078cc88a7d4196ccce4b8d976e06fd9"
 
 # rpc_url = "https://api.cartridge.gg/x/emoji-wars-2/katana"
+
+[tool.dojo.world]
+name = "emoji wars"
+description = "ALL SOCKS MUST DIE"
+cover_uri = "file://assets/cover.png"
+website = "https://emoji-wars-m7na.vercel.app/"
+
+
+# sozo --release migrate --rpc-url https://api.cartridge.gg/x/emoji-wars-2/katana --world 0x1af130f7b9027f3748c1e3b10ca4a82ac836a30ac4f2f84025e83a99a922a0c --account-address 0x2c40fae48905f3fe20bbc68a4077fd01c4638528c9c2d99d2f1b6135d7eb7ee --private-key 0x10ebe1ffcdbfe4c6ea0f0dbd74ce1aef078cc88a7d4196ccce4b8d976e06fd9

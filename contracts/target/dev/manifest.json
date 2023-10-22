@@ -1,7 +1,7 @@
 {
   "world": {
     "name": "world",
-    "address": "0x1af130f7b9027f3748c1e3b10ca4a82ac836a30ac4f2f84025e83a99a922a0c",
+    "address": null,
     "class_hash": "0x5179c281a8d3cca6cfb820201fa7a81150b56f9db492405a29e9564222370b8",
     "abi": [
       {
@@ -857,7 +857,7 @@
   "contracts": [
     {
       "name": "actions",
-      "address": "0x69a474a39b11d05c07bb9090fd1961b8e1c87aa5643e7b97087cb0c7620356a",
+      "address": null,
       "class_hash": "0x4f36fde5068acd667c2021c5fd78340f91ca32d7a42068faf143ede57c21b5b",
       "abi": [
         {
